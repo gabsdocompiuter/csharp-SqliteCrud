@@ -17,10 +17,18 @@ namespace Database
         public Db()
         {
             conn = new SQLiteConnection("Data Source=banco.db;");
+        }
+
+        protected void AbrirConexão()
+        {
             conn.Open();
 
             comm = new SQLiteCommand(conn);
-            CriaTabelas asasd = new CriaTabelas(comm);
+        }
+
+        protected void FecharConexao()
+        {
+
         }
 
         public void ExecuteNonQuery(string sql)

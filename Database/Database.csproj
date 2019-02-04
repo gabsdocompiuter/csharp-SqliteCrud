@@ -60,8 +60,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DaoConfig.cs" />
+    <Compile Include="DAO\ClienteDAO.cs" />
+    <Compile Include="DAO\Dao.cs" />
     <Compile Include="Db.cs" />
     <Compile Include="CriaTabelas.cs" />
+    <Compile Include="Model\Cliente.cs" />
+    <Compile Include="Model\Mdl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
