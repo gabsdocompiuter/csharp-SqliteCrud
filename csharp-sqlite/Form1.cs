@@ -6,24 +6,29 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Database;
+using Database.Model;
+using Database.DAO;
 
 namespace csharp_sqlite
 {
     public partial class Form1 : Form
     {
-        private Db db;
-
         public Form1()
         {
             InitializeComponent();
-
-            db = new Db();
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            db.ExecuteNonQuery(richTextBox1.Text);
+            Cliente cl = new Cliente()
+            {
+                Nome = tbNome.Text,
+                Email = tbEmail.Text
+            };
+
+            Dao d = new Dao();
+            d.Salvar(cl);
         }
 
         private void Form1_Load(object sender, EventArgs e)
