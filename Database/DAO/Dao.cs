@@ -31,6 +31,54 @@ namespace Database.DAO
         }
 
         /// <summary>
+        /// Método para editar um registro
+        /// </summary>
+        /// <param name="mdl"></param>
+        public void Editar(Mdl mdl)
+        {
+            try
+            {
+                AbrirConexão();
+                ExecuteNonQuery(GetSqlUpdate(mdl));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Houve um erro: \n" + ex);
+            }
+            finally
+            {
+                FecharConexao();
+            }
+        }
+
+        /// <summary>
+        /// Método para excluir um registro
+        /// </summary>
+        /// <param name="mdl"></param>
+        public void Excluir(Mdl mdl)
+        {
+            try
+            {
+                AbrirConexão();
+
+                string sql = $@"DELETE FROM {mdl.GetType().Name}
+                                   WHERE id = {mdl.Id};";
+
+                ExecuteNonQuery(sql);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Houve um erro: \n" + ex);
+            }
+            finally
+            {
+                FecharConexao();
+            }
+        }
+
+        #region Métodos Privados
+
+        /// <summary>
         /// Monta o sql de insert
         /// </summary>
         /// <param name="mdl">Model</param>
@@ -83,7 +131,7 @@ namespace Database.DAO
         /// </summary>
         /// <param name="mdl">Model</param>
         /// <returns>Retorna sql para editar no banco</returns>
-        private string GetSqlUpdate(Mdl mdl, int id)
+        private string GetSqlUpdate(Mdl mdl)
         {
             string sql = $"UPDATE {mdl.GetType().Name} SET ";
             
@@ -105,5 +153,7 @@ namespace Database.DAO
 
             return sql;
         }
+
+        #endregion
     }
 }
