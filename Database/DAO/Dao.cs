@@ -18,7 +18,7 @@ namespace Database.DAO
             try
             {
                 AbrirConexão();
-                ExecuteNonQuery(Insert(mdl));
+                ExecuteNonQuery(GetSqlInsert(mdl));
             }
             catch (Exception ex)
             {
@@ -35,35 +35,73 @@ namespace Database.DAO
         /// </summary>
         /// <param name="mdl">Model</param>
         /// <returns>Retorna sql para adicionar no banco</returns>
-        private string Insert(Mdl mdl)
+        private string GetSqlInsert(Mdl mdl)
         {
             string sql = $@"INSERT INTO {mdl.GetType().Name} (";
 
+            #region CAMPOS
             bool first = true;
             foreach (var campo in mdl.GetType().GetProperties())
             {
-                if (!first)
-                    sql += ", ";
-                else
+                //Verifica se o campo não é do Mdl (o id fica guardado lá)
+                if (campo.DeclaringType.Name != "Mdl")
+                {
+                    sql += first ? "" : ", ";
                     first = false;
-
-
-                sql += campo.Name;
+                    
+                    sql += campo.Name;
+                }
             }
+            #endregion
 
             sql += $@") VALUES(";
+
+            #region VALUES
 
             first = true;
             foreach (var campo in mdl.GetType().GetProperties())
             {
-                if (!first)
-                    sql += ", ";
-                else first = false;
+                //Verifica se o campo não é do Mdl (o id fica guardado lá)
+                if (campo.DeclaringType.Name != "Mdl")
+                {
+                    sql += first ? "" : ", ";
+                    first = false;
 
-                sql += "'" + campo.GetValue(mdl, null) + "'";
+                    sql += "'" + campo.GetValue(mdl, null) + "'";
+                }
             }
 
+            #endregion
+
             sql += ");";
+
+            return sql;
+        }
+
+        /// <summary>
+        /// Monta o sql de update
+        /// </summary>
+        /// <param name="mdl">Model</param>
+        /// <returns>Retorna sql para editar no banco</returns>
+        private string GetSqlUpdate(Mdl mdl, int id)
+        {
+            string sql = $"UPDATE {mdl.GetType().Name} SET ";
+            
+            bool first = true;
+            foreach (var campo in mdl.GetType().GetProperties())
+            {
+                //Verifica se o campo não é do Mdl (o id fica guardado lá)
+                if (campo.DeclaringType.Name != "Mdl")
+                {
+                    sql += first ? "" : "AND ";
+                    first = false;
+
+                    sql += campo.Name;
+                    sql += " = '" + campo.GetValue(mdl, null) + "'";
+                }
+            }
+
+            sql += $" WHERE id = {mdl.Id};";
 
             return sql;
         }
