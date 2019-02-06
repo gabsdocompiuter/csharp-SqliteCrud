@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Database.Model;
 
-namespace Database.DAO
+namespace Database.DAL
 {
-    public class Dao : Db
+    public class Crud : SQLite
     {
         /// <summary>
         /// Método para salvar um registro
         /// </summary>
         /// <param name="mdl"></param>
-        public void Salvar(Mdl mdl)
+        public void Insert(Mdl mdl)
         {
             try
             {
@@ -34,12 +35,13 @@ namespace Database.DAO
         /// Método para editar um registro
         /// </summary>
         /// <param name="mdl"></param>
-        public void Editar(Mdl mdl)
+        public void Update(Mdl mdl)
         {
             try
             {
                 AbrirConexão();
-                ExecuteNonQuery(GetSqlUpdate(mdl));
+                string update = GetSqlUpdate(mdl);
+                ExecuteNonQuery(update);
             }
             catch (Exception ex)
             {
@@ -55,7 +57,7 @@ namespace Database.DAO
         /// Método para excluir um registro
         /// </summary>
         /// <param name="mdl"></param>
-        public void Excluir(Mdl mdl)
+        public void Delete(Mdl mdl)
         {
             try
             {
@@ -75,6 +77,38 @@ namespace Database.DAO
                 FecharConexao();
             }
         }
+
+        #region Métodos Protegidos
+
+        /// <summary>
+        /// Retorna DataTable com todas informações do banco
+        /// </summary>
+        /// <param name="mdl"></param>
+        /// <returns>DataTable com todas informações do banco</returns>
+        protected DataTable GetDataTable(Mdl mdl)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                AbrirConexão();
+
+                string sql = $"SELECT * FROM {mdl.GetType().Name};";
+
+                dt = ExecuteDataTable(sql);
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Houve um erro: \n" + ex);
+            }
+            finally
+            {
+                FecharConexao();
+            }
+            return dt;
+        }
+
+        #endregion
 
         #region Métodos Privados
 
@@ -141,7 +175,7 @@ namespace Database.DAO
                 //Verifica se o campo não é do Mdl (o id fica guardado lá)
                 if (campo.DeclaringType.Name != "Mdl")
                 {
-                    sql += first ? "" : "AND ";
+                    sql += first ? "" : " AND ";
                     first = false;
 
                     sql += campo.Name;

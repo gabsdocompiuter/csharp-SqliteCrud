@@ -59,8 +59,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAO\Dao.cs" />
-    <Compile Include="Db.cs" />
+    <Compile Include="DAL\Crud.cs" />
+    <Compile Include="DAL\CrudCliente.cs" />
+    <Compile Include="DAL\SQLite.cs" />
     <Compile Include="Model\Cliente.cs" />
     <Compile Include="Model\Mdl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

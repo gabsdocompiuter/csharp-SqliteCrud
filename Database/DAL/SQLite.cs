@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
+using System.Data;
 
-namespace Database
+namespace Database.DAL
 {
-    public class Db
+    public class SQLite
     {
         private SQLiteConnection conn;
         private SQLiteCommand comm;
@@ -14,7 +15,7 @@ namespace Database
         /// <summary>
         /// Construtor
         /// </summary>
-        public Db()
+        public SQLite()
         {
             conn = new SQLiteConnection("Data Source=banco.db;");
         }
@@ -28,13 +29,27 @@ namespace Database
 
         protected void FecharConexao()
         {
-
+            conn.Close();
         }
 
-        public void ExecuteNonQuery(string sql)
+        protected void ExecuteNonQuery(string sql)
         {
             comm.CommandText = sql;
             comm.ExecuteNonQuery();
+        }
+
+        protected SQLiteDataReader ExecuteReader(string sql)
+        {
+            comm.CommandText = sql;
+            return comm.ExecuteReader();
+        }
+
+        protected DataTable ExecuteDataTable(string sql)
+        {
+            DataTable dt = new DataTable();
+            dt.Load(ExecuteReader(sql));
+
+            return dt;
         }
     }
 }
