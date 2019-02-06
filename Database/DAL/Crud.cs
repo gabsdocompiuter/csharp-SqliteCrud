@@ -40,8 +40,7 @@ namespace Database.DAL
             try
             {
                 AbrirConexão();
-                string update = GetSqlUpdate(mdl);
-                ExecuteNonQuery(update);
+                ExecuteNonQuery(GetSqlUpdate(mdl));
             }
             catch (Exception ex)
             {
@@ -175,7 +174,7 @@ namespace Database.DAL
                 //Verifica se o campo não é do Mdl (o id fica guardado lá)
                 if (campo.DeclaringType.Name != "Mdl")
                 {
-                    sql += first ? "" : " AND ";
+                    sql += first ? "" : ", ";
                     first = false;
 
                     sql += campo.Name;
